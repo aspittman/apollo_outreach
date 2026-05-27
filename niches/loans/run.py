@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from core.crm_client import save_domain_lead_to_crm
 from core.csv_loader import read_csv, write_csv
 from core.lead_scorer import score_lead
 from core.email_writer import build_subject, build_email
@@ -80,6 +81,16 @@ def process_apollo_export(domains):
 
         subject = build_subject(domain_offer)
         body = build_email(lead, domain_offer)
+
+        if score >= 60:
+            save_domain_lead_to_crm(
+                lead=lead,
+                domain_offer=domain_offer,
+                score=score,
+                reasons=reasons,
+                subject=subject,
+                body=body
+            )
 
         scored_rows.append({
             "score": score,
